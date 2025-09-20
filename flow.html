@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>VLearn — Sneak Peek</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Abril+Fatface&family=Rubik:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg: linear-gradient(180deg,#f8fdff,#ffffff);
+    --screen-bg: linear-gradient(180deg,#f8fdff,#ffffff);
+    --card-bg: rgba(255,255,255,0.95);
+    --video-bg: #000;
+    --coming-bg: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(220,240,255,0.6));
+    --text: #003b5c;
+    --muted: rgba(0,0,0,0.55);
+    --accent: #00c0ff;
+    --accent-2: #60d8ff;
+    --transition-speed: 420ms;
+  }
+
+  html,body{height:100%;margin:0;font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;transition:background var(--transition-speed) ease,color var(--transition-speed) ease}
+  .app{height:100vh;width:100vw;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+
+  /* base screen */
+  .screen{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:28px;
+    background:var(--screen-bg);
+    color:var(--text);
+    opacity:0;transform:translateY(8px);visibility:hidden;
+    transition:opacity 520ms cubic-bezier(.2,.9,.2,1), transform 520ms cubic-bezier(.2,.9,.2,1), visibility 0s linear 520ms, background var(--transition-speed) ease;
+    will-change:opacity,transform,background;
+  }
+  .screen.visible{opacity:1;transform:translateY(0);visibility:visible;transition-delay:0s}
+  .screen.exiting{opacity:0;transform:translateY(-8px);visibility:visible}
+
+  /* LOADING */
+  .loader-card{background:var(--card-bg);border-radius:12px;padding:28px 34px;box-shadow:0 18px 50px rgba(2,6,23,0.08);backdrop-filter: blur(6px);text-align:center;max-width:520px;color:var(--text);border:1px solid rgba(0,0,0,0.04)}
+  .loader-title{font-family:'Abril Fatface',serif;font-size:28px;margin:0 0 10px 0;color:var(--text)}
+  .loader-sub{font-size:13px;color:var(--muted);margin:0 0 16px 0}
+  .loader-bar{width:380px;height:12px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.35));overflow:hidden;border:1px solid rgba(0,0,0,0.04)}
+  .loader-bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:999px;box-shadow:0 10px 30px rgba(0,160,255,0.18), inset 0 -6px 20px rgba(255,255,255,0.12);animation:loadFill 4s cubic-bezier(.2,.9,.2,1) forwards}
+  @keyframes loadFill{from{width:0}to{width:100%}}
+
+  /* WELCOME */
+  .wel-text{font-family:'Rubik',sans-serif;font-weight:700;font-size:50px;line-height:1.02;margin:0;text-align:center;color:var(--text);filter:drop-shadow(0 12px 30px rgba(0,0,0,0.06))}
+  /* footer for welcome (fixed at end bottom center) */
+  #welcomeFooter{
+    position:fixed;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:22px;
+    font-size:30px;
+    color:var(--muted);
+    z-index:12000;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity 360ms ease, visibility 0s linear 360ms;
+    pointer-events:none;
+    text-align:center;
+    white-space:nowrap;
+  }
+  @media (max-width:480px){ #welcomeFooter{font-size:18px;bottom:12px} }
+
+  /* RICKROLL */
+  #rickroll{padding:0;background:var(--video-bg);color:#fff;display:flex;align-items:center;justify-content:center}
+  .video-wrap{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:20px}
+  video#rrVideo{max-width:1200px;width:100%;max-height:80vh;border-radius:12px;box-shadow:0 30px 70px rgba(0,0,0,0.6);object-fit:cover}
+  .unmute{position:absolute;right:18px;top:18px;background:rgba(255,255,255,0.06);backdrop-filter: blur(6px);border-radius:8px;padding:8px 10px;border:1px solid rgba(255,255,255,0.06);color:#fff;font-weight:600;cursor:pointer;display:none;z-index:13000}
+
+  /* COMING SOON */
+  .coming-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:36px;border-radius:16px;background:var(--coming-bg);box-shadow:0 24px 60px rgba(2,6,23,0.12)}
+  .coming-title{font-family:'Abril Fatface',serif;font-size:72px;letter-spacing:1px;margin:0;color:var(--text);text-shadow:0 12px 36px rgba(3,59,92,0.18),0 4px 10px rgba(3,59,92,0.12)}
+  .sneak-btn{margin-top:6px;padding:12px 26px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#032033;font-weight:700;cursor:pointer;box-shadow:0 12px 40px rgba(2,40,60,0.18);font-size:18px;transition:transform 180ms ease}
+  .sneak-btn:hover{transform:translateY(-4px)}
+
+  /* REAL SITE placeholder */
+  #real-site .real-wrap{max-width:960px;margin:auto;text-align:left}
+
+  /* Theme toggle */
+  .theme-toggle{position:fixed;right:18px;top:18px;z-index:13000;display:flex;align-items:center;gap:10px}
+  .theme-btn{width:44px;height:44px;border-radius:12px;display:inline-grid;place-items:center;background:var(--card-bg);border:1px solid rgba(0,0,0,0.06);cursor:pointer;box-shadow:0 8px 20px rgba(2,6,23,0.08)}
+  .theme-panel{min-width:220px;padding:10px;border-radius:12px;background:var(--card-bg);box-shadow:0 12px 36px rgba(2,6,23,0.12);backdrop-filter:blur(6px);display:none;flex-direction:column;gap:8px}
+  .theme-panel.visible{display:flex}
+  .theme-item{padding:8px 10px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1px solid rgba(0,0,0,0.04);background:transparent}
+  .theme-swatch{height:28px;width:54px;border-radius:8px;margin-left:12px;box-shadow:inset 0 -6px 16px rgba(0,0,0,0.08)}
+  .theme-label{font-weight:700;color:var(--text);font-size:14px}
+
+  @media (max-width:720px){
+    .coming-title{font-size:44px}
+    .loader-bar{width:260px}
+    .loader-card{padding:22px}
+    .wel-text{font-size:34px}
+  }
+
+  /* Themes: apply to everything (backgrounds, cards, footer, text) */
+  body[data-theme="light"]{
+    --bg: linear-gradient(180deg,#f8fdff,#ffffff);
+    --screen-bg: linear-gradient(180deg,#f8fdff,#ffffff);
+    --card-bg: rgba(255,255,255,0.95);
+    --video-bg: #000;
+    --coming-bg: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(220,240,255,0.6));
+    --text: #003b5c;
+    --muted: rgba(0,0,0,0.55);
+    --accent: #00c0ff;
+    --accent-2: #60d8ff;
+  }
+  body[data-theme="dark"]{
+    --bg: linear-gradient(180deg,#031428,#061a2b);
+    --screen-bg: linear-gradient(180deg,#041428,#061a2b);
+    --card-bg: rgba(6,18,36,0.7);
+    --video-bg: #000;
+    --coming-bg: linear-gradient(135deg, rgba(6,18,36,0.7), rgba(4,26,42,0.5));
+    --text: #d8eef7;
+    --muted: rgba(255,255,255,0.68);
+    --accent: #6ee7ff;
+    --accent-2: #60a5fa;
+  }
+  body[data-theme="msdos"]{
+    --bg: linear-gradient(180deg,#001a33,#001a33);
+    --screen-bg: #001a33;
+    --card-bg: rgba(0,26,51,1);
+    --video-bg: #001a33;
+    --coming-bg: #001a33;
+    --text: #e6f7ff;
+    --muted: rgba(230,247,255,0.9);
+    --accent: #00e6b8;
+    --accent-2: #00e6b8;
+  }
+  body[data-theme="radioactive"]{
+    --bg: linear-gradient(180deg,#0b2b12,#07300d);
+    --screen-bg: linear-gradient(180deg,#07220a,#071f09);
+    --card-bg: rgba(10,40,10,0.9);
+    --video-bg: #041205;
+    --coming-bg: linear-gradient(135deg, rgba(34,70,20,0.7), rgba(20,60,30,0.45));
+    --text: #e6ffe6;
+    --muted: rgba(230,255,230,0.65);
+    --accent: #9eff00;
+    --accent-2: #4ff47a;
+  }
+  body[data-theme="lava"]{
+    --bg: linear-gradient(180deg,#2b0000,#180000);
+    --screen-bg: linear-gradient(180deg,#2b0000,#180000);
+    --card-bg: rgba(255,230,220,0.04);
+    --video-bg: #0b0000;
+    --coming-bg: linear-gradient(135deg, rgba(80,0,0,0.6), rgba(160,40,0,0.35));
+    --text: #fff0e6;
+    --muted: rgba(255,224,200,0.7);
+    --accent: #ff3b3b;
+    --accent-2: #ffb84d;
+  }
+  body[data-theme="glitched"]{
+    --bg: linear-gradient(180deg,#000000,#0b0010);
+    --screen-bg: linear-gradient(180deg,#000000,#0b0010);
+    --card-bg: rgba(10,10,10,0.85);
+    --video-bg: #040004;
+    --coming-bg: linear-gradient(135deg, rgba(6,6,6,0.85), rgba(10,10,10,0.6));
+    --text: #e6f7ff;
+    --muted: rgba(230,247,255,0.85);
+    --accent: #00ffff;
+    --accent-2: #ff0066;
+  }
+  body[data-theme="glitched"]::after{content:"";position:fixed;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:0.06;background-image:linear-gradient(90deg,rgba(255,0,102,0.06) 0%, rgba(0,255,255,0.04) 30%, rgba(255,0,102,0.03) 60%);animation:glitchShift 8s linear infinite}
+  @keyframes glitchShift{0%{background-position:0 0}50%{background-position:100% 0}100%{background-position:0 0}}
+</style>
+</head>
+<body data-theme="light">
+  <div class="app" id="app">
+
+    <!-- Theme toggle -->
+    <div class="theme-toggle" aria-hidden="false">
+      <button class="theme-btn" id="themeOpen" title="Choose theme" aria-label="Choose theme">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 21v-3.6l9.2-9.2 3.6 3.6L6.6 21H3z" fill="currentColor" opacity="0.16"/>
+          <path d="M14.8 6.2l3.6 3.6-6.6 6.6H8.2v-3.6L14.8 6.2zM20.7 5.3a2 2 0 0 0 0-2.8 1.97 1.97 0 0 0-2.8 0l-.9.9 2.8 2.8.9-.9z" fill="currentColor"/>
+        </svg>
+      </button>
+
+      <div class="theme-panel" id="themePanel" aria-hidden="true" role="menu" aria-label="Theme selector">
+        <div class="theme-item" data-theme="light" role="menuitem" tabindex="0"><div class="theme-label">Light</div><div class="theme-swatch" style="background:linear-gradient(90deg,#ffffff,#cdeeff)"></div></div>
+        <div class="theme-item" data-theme="dark" role="menuitem" tabindex="0"><div class="theme-label">Dark</div><div class="theme-swatch" style="background:linear-gradient(90deg,#031428,#08324a)"></div></div>
+        <div class="theme-item" data-theme="msdos" role="menuitem" tabindex="0"><div class="theme-label">MS DOS</div><div class="theme-swatch" style="background:linear-gradient(90deg,#001a33,#002b4d)"></div></div>
+        <div class="theme-item" data-theme="radioactive" role="menuitem" tabindex="0"><div class="theme-label">Radioactive</div><div class="theme-swatch" style="background:linear-gradient(90deg,#9eff00,#1ab35a)"></div></div>
+        <div class="theme-item" data-theme="lava" role="menuitem" tabindex="0"><div class="theme-label">Lava</div><div class="theme-swatch" style="background:linear-gradient(90deg,#ff3b3b,#ffb84d)"></div></div>
+        <div class="theme-item" data-theme="glitched" role="menuitem" tabindex="0"><div class="theme-label">Glitched</div><div class="theme-swatch" style="background:linear-gradient(90deg,#ff0066,#00ffff)"></div></div>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <section id="loading" class="screen">
+      <div class="loader-card" role="status" aria-live="polite">
+        <div class="loader-title">VLearn</div>
+        <div class="loader-sub">Preparing a quick sneak peek for you...</div>
+        <div class="loader-bar" aria-hidden="true"><i></i></div>
+      </div>
+    </section>
+
+    <!-- WELCOME -->
+    <section id="welcome" class="screen">
+      <div>
+        <div class="wel-text">WELCOME TO THE<br/>VLEARN<br/>AN DIRECTORY FOR ALL CBSE CLASS X ANSWERS</div>
+      </div>
+    </section>
+
+    <!-- RICKROLL -->
+    <section id="rickroll" class="screen" style="display:flex;">
+      <div class="video-wrap">
+        <video id="rrVideo" src="rickroll.mp4" playsinline preload="auto"></video>
+        <button id="unmuteBtn" class="unmute" aria-hidden="true" title="Unmute">Unmute</button>
+      </div>
+    </section>
+
+    <!-- COMING SOON -->
+    <section id="comingsoon" class="screen">
+      <div class="coming-inner" role="dialog" aria-label="Coming soon">
+        <div class="coming-title">COMING SOON</div>
+        <button id="sneakBtn" class="sneak-btn" aria-label="Sneak peek">Sneak Peek</button>
+      </div>
+    </section>
+
+    <!-- REAL SITE -->
+    <section id="real-site" class="screen" aria-hidden="true">
+      <div class="real-wrap">
+        <h2 style="font-family:'Abril Fatface',serif;">Welcome to VLearn (Sneak Peek)</h2>
+        <p style="color:var(--muted)">This area is the placeholder for your actual site — replace with your real content or redirect as needed.</p>
+        <div style="margin-top:18px;background:var(--card-bg);padding:18px;border-radius:12px;">
+          <strong>Sample feature:</strong>
+          <ul>
+            <li>Chapter-wise solved answers</li>
+            <li>Revision notes</li>
+            <li>Practice tests and MCQs</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Welcome footer (fixed at bottom center of viewport) -->
+  <div id="welcomeFooter">©TREDT Publications Studios 2025 – 2026</div>
+
+<script>
+  // Show/hide screens with robust visibility handling
+  function showScreen(id){
+    const target = document.getElementById(id);
+    const footer = document.getElementById('welcomeFooter');
+
+    // hide other visible screens
+    document.querySelectorAll('.screen').forEach(s=>{
+      if(s !== target && s.classList.contains('visible')){
+        s.classList.remove('visible');
+        s.classList.add('exiting');
+        // after transition, fully hide
+        setTimeout(()=> { s.classList.remove('exiting'); s.style.visibility = 'hidden'; }, 560);
+      } else if(s !== target){
+        s.style.visibility = 'hidden';
+      }
+    });
+
+    // show this screen
+    target.style.visibility = 'visible';
+    requestAnimationFrame(()=> {
+      target.classList.add('visible');
+      target.classList.remove('exiting');
+      // footer: visible only during welcome
+      if(footer){
+        if(id === 'welcome'){
+          footer.style.visibility = 'visible';
+          footer.style.opacity = '1';
+        } else {
+          footer.style.opacity = '0';
+          setTimeout(()=>{ footer.style.visibility = 'hidden'; }, 380);
+        }
+      }
+    });
+  }
+
+  // Sequence durations (ms)
+  const LOADING_MS = 4000;
+  const WELCOME_MS = 4000;
+  const RICK_MS = 3000;
+
+  // play rickroll for a fixed duration even if autoplay blocked — fallback to muted autoplay
+  function playRickrollFor(durationMs){
+    return new Promise((resolve)=>{
+      const vid = document.getElementById('rrVideo');
+      const unmuteBtn = document.getElementById('unmuteBtn');
+      let done = false;
+
+      function finish(){
+        try{ vid.pause(); vid.currentTime = 0; }catch(e){}
+        unmuteBtn.style.display = 'none';
+        unmuteBtn.setAttribute('aria-hidden','true');
+        if(!done){ done = true; resolve(); }
+      }
+
+      // attempt unmuted autoplay
+      vid.muted = false;
+      vid.play().then(()=>{
+        // autoplay with sound allowed
+        setTimeout(finish, durationMs);
+      }).catch(()=>{
+        // try muted autoplay
+        vid.muted = true;
+        vid.play().then(()=>{
+          // show unmute
+          unmuteBtn.style.display = 'inline-block';
+          unmuteBtn.setAttribute('aria-hidden','false');
+          unmuteBtn.onclick = function(){
+            vid.muted = false;
+            vid.play().catch(()=>{});
+            unmuteBtn.style.display = 'none';
+          };
+          setTimeout(finish, durationMs);
+        }).catch(()=>{
+          // autoplay failed entirely (very rare), just wait the duration and resolve
+          setTimeout(finish, durationMs);
+        });
+      });
+    });
+  }
+
+  // run the full flow
+  async function runSequence(){
+    showScreen('loading');
+    await new Promise(r=>setTimeout(r, LOADING_MS));
+
+    showScreen('welcome');
+    await new Promise(r=>setTimeout(r, WELCOME_MS));
+
+    showScreen('rickroll');
+    await playRickrollFor(RICK_MS);
+
+    showScreen('comingsoon');
+  }
+
+  // Sneak peek to reveal real site
+  document.getElementById('sneakBtn').addEventListener('click', ()=>{
+    showScreen('real-site');
+    // focus for accessibility
+    document.getElementById('real-site').focus?.();
+  });
+
+  // Theme panel interactions
+  const themeBtn = document.getElementById('themeOpen');
+  const panel = document.getElementById('themePanel');
+  themeBtn.addEventListener('click', (e)=> { e.stopPropagation(); panel.classList.toggle('visible'); });
+
+  document.addEventListener('click', (e)=>{
+    if(!panel.contains(e.target) && !themeBtn.contains(e.target)){
+      panel.classList.remove('visible');
+    }
+  });
+
+  document.querySelectorAll('.theme-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const t = item.dataset.theme;
+      setTheme(t);
+      panel.classList.remove('visible');
+    });
+    item.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'Enter' || ev.key === ' '){
+        ev.preventDefault();
+        item.click();
+      }
+    });
+  });
+
+  function setTheme(name){
+    document.body.setAttribute('data-theme', name);
+    try{ localStorage.setItem('vlearn_theme', name); }catch(e){}
+  }
+  function restoreTheme(){
+    try{
+      const t = localStorage.getItem('vlearn_theme');
+      if(t) setTheme(t);
+    }catch(e){}
+  }
+  restoreTheme();
+
+  // start sequence automatically after load
+  window.addEventListener('load', ()=> {
+    // small delay to allow fonts/background to paint
+    setTimeout(()=> runSequence(), 220);
+  });
+
+  // keyboard: esc closes theme panel
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){ panel.classList.remove('visible'); }
+  });
+</script>
+</body>
+</html>
