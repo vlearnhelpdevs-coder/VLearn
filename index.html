@@ -1,294 +1,394 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VLearn — Coming Soon</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>VLearn — Sneak Peek</title>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Abril+Fatface&family=Rubik:wght@500;700&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg1: #0f172a; /* navy */
-      --bg2: #061126; /* deep */
-      --accent: #6ee7b7; /* mint */
-      --accent-2: #60a5fa; /* sky */
-      --muted: rgba(255,255,255,0.75);
-      --glass: rgba(255,255,255,0.04);
-      --card-shadow: 0 10px 30px rgba(2,6,23,0.6);
-      --radius: 14px;
-      --max-width: 980px;
-    }
+<style>
+  :root{
+    --bg: linear-gradient(180deg,#f8fdff,#ffffff);
+    --screen-bg: linear-gradient(180deg,#f8fdff,#ffffff);
+    --card-bg: rgba(255,255,255,0.95);
+    --video-bg: #000;
+    --coming-bg: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(220,240,255,0.6));
+    --text: #003b5c;
+    --muted: rgba(0,0,0,0.55);
+    --accent: #00c0ff;
+    --accent-2: #60d8ff;
+    --transition-speed: 420ms;
+  }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      background: radial-gradient(800px 600px at 10% 10%, rgba(96,165,250,0.06), transparent 8%),
-                  radial-gradient(700px 500px at 90% 90%, rgba(110,231,183,0.03), transparent 8%),
-                  linear-gradient(120deg, var(--bg1), var(--bg2));
-      color: #e6eef8;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:48px 24px;
-      overflow:hidden;
-    }
+  html,body{height:100%;margin:0;font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;transition:background var(--transition-speed) ease,color var(--transition-speed) ease}
+  .app{height:100vh;width:100vw;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 
-    /* animated background gradient shift */
-    @keyframes bgShift{
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
-    }
-    body::before{
-      content:'';
-      position:fixed;inset:0;z-index:0;pointer-events:none;
-      background:linear-gradient(45deg, rgba(96,165,250,0.06), rgba(110,231,183,0.04));
-      filter: blur(40px) saturate(130%);
-      mix-blend-mode: screen;
-      animation:bgShift 18s linear infinite;
-    }
+  /* base screen */
+  .screen{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:28px;
+    background:var(--screen-bg);
+    color:var(--text);
+    opacity:0;transform:translateY(8px);visibility:hidden;
+    transition:opacity 520ms cubic-bezier(.2,.9,.2,1), transform 520ms cubic-bezier(.2,.9,.2,1), visibility 0s linear 520ms, background var(--transition-speed) ease;
+    will-change:opacity,transform,background;
+  }
+  .screen.visible{opacity:1;transform:translateY(0);visibility:visible;transition-delay:0s}
+  .screen.exiting{opacity:0;transform:translateY(-8px);visibility:visible}
 
-    .wrap{position:relative;z-index:1;max-width:var(--max-width);width:100%;}
+  /* LOADING */
+  .loader-card{background:var(--card-bg);border-radius:12px;padding:28px 34px;box-shadow:0 18px 50px rgba(2,6,23,0.08);backdrop-filter: blur(6px);text-align:center;max-width:520px;color:var(--text);border:1px solid rgba(0,0,0,0.04)}
+  .loader-title{font-family:'Abril Fatface',serif;font-size:28px;margin:0 0 10px 0;color:var(--text)}
+  .loader-sub{font-size:13px;color:var(--muted);margin:0 0 16px 0}
+  .loader-bar{width:380px;height:12px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.35));overflow:hidden;border:1px solid rgba(0,0,0,0.04)}
+  .loader-bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:999px;box-shadow:0 10px 30px rgba(0,160,255,0.18), inset 0 -6px 20px rgba(255,255,255,0.12);animation:loadFill 4s cubic-bezier(.2,.9,.2,1) forwards}
+  @keyframes loadFill{from{width:0}to{width:100%}}
 
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      border-radius:var(--radius);
-      padding:36px;
-      box-shadow:var(--card-shadow);
-      backdrop-filter: blur(8px) saturate(120%);
-      border:1px solid rgba(255,255,255,0.04);
-      display:flex;
-      gap:28px;
-      align-items:center;
-    }
+  /* WELCOME */
+  .wel-text{font-family:'Rubik',sans-serif;font-weight:700;font-size:50px;line-height:1.02;margin:0;text-align:center;color:var(--text);filter:drop-shadow(0 12px 30px rgba(0,0,0,0.06))}
+  /* footer for welcome (fixed at end bottom center) */
+  #welcomeFooter{
+    position:fixed;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:22px;
+    font-size:30px;
+    color:var(--muted);
+    z-index:12000;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity 360ms ease, visibility 0s linear 360ms;
+    pointer-events:none;
+    text-align:center;
+    white-space:nowrap;
+  }
+  @media (max-width:480px){ #welcomeFooter{font-size:18px;bottom:12px} }
 
-    .brand{display:flex;gap:18px;align-items:center;min-width:320px}
-    .logo{
-      width:86px;height:86px;border-radius:16px;display:flex;align-items:center;justify-content:center;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      box-shadow:0 6px 20px rgba(96,165,250,0.12), inset 0 -6px 18px rgba(255,255,255,0.08);
-      transform:translateZ(0);
-      animation:logoFloat 6s ease-in-out infinite;
-    }
-    @keyframes logoFloat{
-      0%{transform:translateY(0) scale(1)}
-      50%{transform:translateY(-6px) scale(1.02)}
-      100%{transform:translateY(0) scale(1)}
-    }
+  /* RICKROLL */
+  #rickroll{padding:0;background:var(--video-bg);color:#fff;display:flex;align-items:center;justify-content:center}
+  .video-wrap{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:20px}
+  video#rrVideo{max-width:1200px;width:100%;max-height:80vh;border-radius:12px;box-shadow:0 30px 70px rgba(0,0,0,0.6);object-fit:cover}
+  .unmute{position:absolute;right:18px;top:18px;background:rgba(255,255,255,0.06);backdrop-filter: blur(6px);border-radius:8px;padding:8px 10px;border:1px solid rgba(255,255,255,0.06);color:#fff;font-weight:600;cursor:pointer;display:none;z-index:13000}
 
-    .logo svg{display:block;width:54px;height:54px}
+  /* COMING SOON */
+  .coming-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:36px;border-radius:16px;background:var(--coming-bg);box-shadow:0 24px 60px rgba(2,6,23,0.12)}
+  .coming-title{font-family:'Abril Fatface',serif;font-size:72px;letter-spacing:1px;margin:0;color:var(--text);text-shadow:0 12px 36px rgba(3,59,92,0.18),0 4px 10px rgba(3,59,92,0.12)}
+  .sneak-btn{margin-top:6px;padding:12px 26px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#032033;font-weight:700;cursor:pointer;box-shadow:0 12px 40px rgba(2,40,60,0.18);font-size:18px;transition:transform 180ms ease}
+  .sneak-btn:hover{transform:translateY(-4px)}
 
-    .title{line-height:1;margin:0}
-    .title h1{
-      font-family: 'Merriweather', serif;
-      font-size:22px;margin:0 0 6px 0;color:white;letter-spacing:-0.2px;
-    }
-    .title p{margin:0;font-size:14px;color:var(--muted)}
+  /* REAL SITE placeholder */
+  #real-site .real-wrap{max-width:960px;margin:auto;text-align:left}
 
-    /* right side */
-    .right{
-      flex:1;display:flex;flex-direction:column;gap:18px;align-items:flex-start;
-    }
+  /* Theme toggle */
+  .theme-toggle{position:fixed;right:18px;top:18px;z-index:13000;display:flex;align-items:center;gap:10px}
+  .theme-btn{width:44px;height:44px;border-radius:12px;display:inline-grid;place-items:center;background:var(--card-bg);border:1px solid rgba(0,0,0,0.06);cursor:pointer;box-shadow:0 8px 20px rgba(2,6,23,0.08)}
+  .theme-panel{min-width:220px;padding:10px;border-radius:12px;background:var(--card-bg);box-shadow:0 12px 36px rgba(2,6,23,0.12);backdrop-filter:blur(6px);display:none;flex-direction:column;gap:8px}
+  .theme-panel.visible{display:flex}
+  .theme-item{padding:8px 10px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1px solid rgba(0,0,0,0.04);background:transparent}
+  .theme-swatch{height:28px;width:54px;border-radius:8px;margin-left:12px;box-shadow:inset 0 -6px 16px rgba(0,0,0,0.08)}
+  .theme-label{font-weight:700;color:var(--text);font-size:14px}
 
-    .headline{font-size:28px;font-weight:700;margin:0;font-family:'Merriweather',serif;color:white}
-    .sub{color:var(--muted);margin:0;font-size:15px}
+  @media (max-width:720px){
+    .coming-title{font-size:44px}
+    .loader-bar{width:260px}
+    .loader-card{padding:22px}
+    .wel-text{font-size:34px}
+  }
 
-    /* typing subtitle */
-    .typing{
-      display:inline-block;
-      border-right:2px solid rgba(255,255,255,0.12);
-      white-space:nowrap;overflow:hidden;max-width:100%;
-      font-weight:600;margin-top:6px;font-size:15px;color:var(--muted)
-    }
-    @keyframes typingAnim{
-      from{width:0}
-      to{width:100%}
-    }
-    @keyframes blinkCaret{
-      50%{border-color:transparent}
-    }
-
-    .countdown{
-      display:flex;gap:12px;align-items:center;margin-top:4px;
-    }
-    .timebox{background:var(--glass);padding:10px 12px;border-radius:10px;text-align:center;min-width:72px}
-    .timebox strong{display:block;font-size:18px}
-    .timebox span{display:block;font-size:12px;color:var(--muted)}
-
-    /* actions */
-    .actions{display:flex;gap:12px;align-items:center;margin-top:8px}
-    .btn{
-      background:transparent;border:1px solid rgba(255,255,255,0.08);padding:10px 16px;border-radius:10px;
-      cursor:pointer;font-weight:600;backdrop-filter: blur(6px);
-    }
-    .btn.primary{
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#05203a;border:none;box-shadow:0 8px 20px rgba(6,40,61,0.3);
-      transform:translateZ(0);transition:transform .18s ease, box-shadow .18s ease;
-    }
-    .btn.primary:hover{transform:translateY(-3px);box-shadow:0 18px 30px rgba(6,40,61,0.35)}
-
-    .newsletter{display:flex;gap:8px;align-items:center}
-    .newsletter input{
-      min-width:220px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;font-size:14px
-    }
-
-    /* footer */
-    .meta{display:flex;gap:18px;align-items:center;color:var(--muted);font-size:13px;margin-top:6px}
-
-    /* subtle decorative dots */
-    .dots{position:absolute;right:-60px;top:-80px;opacity:0.12;transform:rotate(18deg)}
-
-    /* responsive */
-    @media (max-width:880px){
-      .card{flex-direction:column;align-items:stretch;padding:24px}
-      .brand{min-width:unset}
-      .logo{width:72px;height:72px}
-      .headline{font-size:22px}
-      .timebox{min-width:56px}
-    }
-  </style>
+  /* Themes: apply to everything (backgrounds, cards, footer, text) */
+  body[data-theme="light"]{
+    --bg: linear-gradient(180deg,#f8fdff,#ffffff);
+    --screen-bg: linear-gradient(180deg,#f8fdff,#ffffff);
+    --card-bg: rgba(255,255,255,0.95);
+    --video-bg: #000;
+    --coming-bg: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(220,240,255,0.6));
+    --text: #003b5c;
+    --muted: rgba(0,0,0,0.55);
+    --accent: #00c0ff;
+    --accent-2: #60d8ff;
+  }
+  body[data-theme="dark"]{
+    --bg: linear-gradient(180deg,#031428,#061a2b);
+    --screen-bg: linear-gradient(180deg,#041428,#061a2b);
+    --card-bg: rgba(6,18,36,0.7);
+    --video-bg: #000;
+    --coming-bg: linear-gradient(135deg, rgba(6,18,36,0.7), rgba(4,26,42,0.5));
+    --text: #d8eef7;
+    --muted: rgba(255,255,255,0.68);
+    --accent: #6ee7ff;
+    --accent-2: #60a5fa;
+  }
+  body[data-theme="msdos"]{
+    --bg: linear-gradient(180deg,#001a33,#001a33);
+    --screen-bg: #001a33;
+    --card-bg: rgba(0,26,51,1);
+    --video-bg: #001a33;
+    --coming-bg: #001a33;
+    --text: #e6f7ff;
+    --muted: rgba(230,247,255,0.9);
+    --accent: #00e6b8;
+    --accent-2: #00e6b8;
+  }
+  body[data-theme="radioactive"]{
+    --bg: linear-gradient(180deg,#0b2b12,#07300d);
+    --screen-bg: linear-gradient(180deg,#07220a,#071f09);
+    --card-bg: rgba(10,40,10,0.9);
+    --video-bg: #041205;
+    --coming-bg: linear-gradient(135deg, rgba(34,70,20,0.7), rgba(20,60,30,0.45));
+    --text: #e6ffe6;
+    --muted: rgba(230,255,230,0.65);
+    --accent: #9eff00;
+    --accent-2: #4ff47a;
+  }
+  body[data-theme="lava"]{
+    --bg: linear-gradient(180deg,#2b0000,#180000);
+    --screen-bg: linear-gradient(180deg,#2b0000,#180000);
+    --card-bg: rgba(255,230,220,0.04);
+    --video-bg: #0b0000;
+    --coming-bg: linear-gradient(135deg, rgba(80,0,0,0.6), rgba(160,40,0,0.35));
+    --text: #fff0e6;
+    --muted: rgba(255,224,200,0.7);
+    --accent: #ff3b3b;
+    --accent-2: #ffb84d;
+  }
+  body[data-theme="glitched"]{
+    --bg: linear-gradient(180deg,#000000,#0b0010);
+    --screen-bg: linear-gradient(180deg,#000000,#0b0010);
+    --card-bg: rgba(10,10,10,0.85);
+    --video-bg: #040004;
+    --coming-bg: linear-gradient(135deg, rgba(6,6,6,0.85), rgba(10,10,10,0.6));
+    --text: #e6f7ff;
+    --muted: rgba(230,247,255,0.85);
+    --accent: #00ffff;
+    --accent-2: #ff0066;
+  }
+  body[data-theme="glitched"]::after{content:"";position:fixed;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:0.06;background-image:linear-gradient(90deg,rgba(255,0,102,0.06) 0%, rgba(0,255,255,0.04) 30%, rgba(255,0,102,0.03) 60%);animation:glitchShift 8s linear infinite}
+  @keyframes glitchShift{0%{background-position:0 0}50%{background-position:100% 0}100%{background-position:0 0}}
+</style>
 </head>
-<body>
-  <div class="wrap">
-    <div class="card" role="region" aria-label="VLearn coming soon">
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <!-- book + check SVG -->
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect x="6" y="10" width="44" height="44" rx="8" fill="rgba(255,255,255,0.12)"/>
-            <path d="M18 20h22v2H18z" fill="white" opacity="0.95"/>
-            <path d="M18 26h22v2H18z" fill="white" opacity="0.9"/>
-            <path d="M18 32h12v2H18z" fill="white" opacity="0.9"/>
-            <g transform="translate(36,36)">
-              <circle cx="0" cy="0" r="7" fill="rgba(255,255,255,0.95)" />
-              <path d="M-3 0l1.8 2.4L4 -3" stroke="#05203a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            </g>
-          </svg>
-        </div>
-        <div class="title">
-          <h1>VLearn</h1>
-          <p>CBSE Class X — All Answers 101</p>
-        </div>
+<body data-theme="light">
+  <div class="app" id="app">
+
+    <!-- Theme toggle -->
+    <div class="theme-toggle" aria-hidden="false">
+      <button class="theme-btn" id="themeOpen" title="Choose theme" aria-label="Choose theme">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 21v-3.6l9.2-9.2 3.6 3.6L6.6 21H3z" fill="currentColor" opacity="0.16"/>
+          <path d="M14.8 6.2l3.6 3.6-6.6 6.6H8.2v-3.6L14.8 6.2zM20.7 5.3a2 2 0 0 0 0-2.8 1.97 1.97 0 0 0-2.8 0l-.9.9 2.8 2.8.9-.9z" fill="currentColor"/>
+        </svg>
+      </button>
+
+      <div class="theme-panel" id="themePanel" aria-hidden="true" role="menu" aria-label="Theme selector">
+        <div class="theme-item" data-theme="light" role="menuitem" tabindex="0"><div class="theme-label">Light</div><div class="theme-swatch" style="background:linear-gradient(90deg,#ffffff,#cdeeff)"></div></div>
+        <div class="theme-item" data-theme="dark" role="menuitem" tabindex="0"><div class="theme-label">Dark</div><div class="theme-swatch" style="background:linear-gradient(90deg,#031428,#08324a)"></div></div>
+        <div class="theme-item" data-theme="msdos" role="menuitem" tabindex="0"><div class="theme-label">MS DOS</div><div class="theme-swatch" style="background:linear-gradient(90deg,#001a33,#002b4d)"></div></div>
+        <div class="theme-item" data-theme="radioactive" role="menuitem" tabindex="0"><div class="theme-label">Radioactive</div><div class="theme-swatch" style="background:linear-gradient(90deg,#9eff00,#1ab35a)"></div></div>
+        <div class="theme-item" data-theme="lava" role="menuitem" tabindex="0"><div class="theme-label">Lava</div><div class="theme-swatch" style="background:linear-gradient(90deg,#ff3b3b,#ffb84d)"></div></div>
+        <div class="theme-item" data-theme="glitched" role="menuitem" tabindex="0"><div class="theme-label">Glitched</div><div class="theme-swatch" style="background:linear-gradient(90deg,#ff0066,#00ffff)"></div></div>
       </div>
-
-      <div class="right">
-        <h2 class="headline">Coming Soon — Complete answer bank for Class X</h2>
-        <p class="sub">Teacher-reviewed answers and solved questions — built for clarity and exam readiness.</p>
-
-        <div>
-          <div class="typing" id="typing">Launching with full answers, chapter-wise notes, and practice tests.</div>
-        </div>
-
-        <div class="countdown" aria-hidden="false" id="countdown">
-          <div class="timebox"><strong id="days">--</strong><span>Days</span></div>
-          <div class="timebox"><strong id="hours">--</strong><span>Hours</span></div>
-          <div class="timebox"><strong id="minutes">--</strong><span>Minutes</span></div>
-          <div class="timebox"><strong id="seconds">--</strong><span>Seconds</span></div>
-        </div>
-
-        <div class="actions">
-          <form class="newsletter" onsubmit="subscribe(event)" aria-label="Subscribe to updates">
-            <input id="email" type="email" placeholder="Enter your email" aria-label="Email address" required>
-            <button type="submit" class="btn primary">Notify Me</button>
-          </form>
-
-          <button class="btn" onclick="openDemo()" aria-label="See sample answers">See sample</button>
-        </div>
-
-        <div class="meta">
-          <div>Made for Class X • CBSE aligned</div>
-          <div style="opacity:0.6">•</div>
-          <div>Contact: <a href="mailto:support@VLearn.example" style="color:inherit;text-decoration:underline;">vlearnhelpdevs@gmail.com</a></div>
-        </div>
-      </div>
-
-      <svg class="dots" width="220" height="220" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="g" x1="0" x2="1">
-            <stop offset="0" stop-color="#60a5fa" stop-opacity="0.7" />
-            <stop offset="1" stop-color="#6ee7b7" stop-opacity="0.7" />
-          </linearGradient>
-        </defs>
-        <circle cx="20" cy="20" r="2.4" fill="url(#g)" />
-        <circle cx="30" cy="30" r="2.4" fill="url(#g)" />
-        <circle cx="40" cy="40" r="2.4" fill="url(#g)" />
-        <circle cx="50" cy="50" r="2.4" fill="url(#g)" />
-        <circle cx="60" cy="60" r="2.4" fill="url(#g)" />
-      </svg>
     </div>
+
+    <!-- LOADING -->
+    <section id="loading" class="screen">
+      <div class="loader-card" role="status" aria-live="polite">
+        <div class="loader-title">VLearn</div>
+        <div class="loader-sub">Preparing a quick sneak peek for you...</div>
+        <div class="loader-bar" aria-hidden="true"><i></i></div>
+      </div>
+    </section>
+
+    <!-- WELCOME -->
+    <section id="welcome" class="screen">
+      <div>
+        <div class="wel-text">WELCOME TO THE<br/>VLEARN<br/>AN DIRECTORY FOR ALL CBSE CLASS X ANSWERS</div>
+      </div>
+    </section>
+
+    <!-- RICKROLL -->
+    <section id="rickroll" class="screen" style="display:flex;">
+      <div class="video-wrap">
+        <video id="rrVideo" src="rickroll.mp4" playsinline preload="auto"></video>
+        <button id="unmuteBtn" class="unmute" aria-hidden="true" title="Unmute">Unmute</button>
+      </div>
+    </section>
+
+    <!-- COMING SOON -->
+    <section id="comingsoon" class="screen">
+      <div class="coming-inner" role="dialog" aria-label="Coming soon">
+        <div class="coming-title">COMING SOON</div>
+        <button id="sneakBtn" class="sneak-btn" aria-label="Sneak peek">Sneak Peek</button>
+      </div>
+    </section>
+
+    <!-- REAL SITE -->
+    <section id="real-site" class="screen" aria-hidden="true">
+      <div class="real-wrap">
+        <h2 style="font-family:'Abril Fatface',serif;">Welcome to VLearn (Sneak Peek)</h2>
+        <p style="color:var(--muted)">This area is the placeholder for your actual site — replace with your real content or redirect as needed.</p>
+        <div style="margin-top:18px;background:var(--card-bg);padding:18px;border-radius:12px;">
+          <strong>Sample feature:</strong>
+          <ul>
+            <li>Chapter-wise solved answers</li>
+            <li>Revision notes</li>
+            <li>Practice tests and MCQs</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
   </div>
 
-  <script>
-    // Typing animation
-    (function(){
-      const el = document.getElementById('typing');
-      const text = el.textContent.trim();
-      el.textContent = '';
-      const speed = 28; // ms per char
-      let i = 0;
-      function step(){
-        if(i <= text.length){
-          el.textContent = text.slice(0,i);
-          i++;
-          setTimeout(step, speed);
+  <!-- Welcome footer (fixed at bottom center of viewport) -->
+  <div id="welcomeFooter">©TREDT Publications Studios 2025 – 2026</div>
+
+<script>
+  // Show/hide screens with robust visibility handling
+  function showScreen(id){
+    const target = document.getElementById(id);
+    const footer = document.getElementById('welcomeFooter');
+
+    // hide other visible screens
+    document.querySelectorAll('.screen').forEach(s=>{
+      if(s !== target && s.classList.contains('visible')){
+        s.classList.remove('visible');
+        s.classList.add('exiting');
+        // after transition, fully hide
+        setTimeout(()=> { s.classList.remove('exiting'); s.style.visibility = 'hidden'; }, 560);
+      } else if(s !== target){
+        s.style.visibility = 'hidden';
+      }
+    });
+
+    // show this screen
+    target.style.visibility = 'visible';
+    requestAnimationFrame(()=> {
+      target.classList.add('visible');
+      target.classList.remove('exiting');
+      // footer: visible only during welcome
+      if(footer){
+        if(id === 'welcome'){
+          footer.style.visibility = 'visible';
+          footer.style.opacity = '1';
         } else {
-          // blink caret effect
-          el.style.borderRight = '2px solid rgba(255,255,255,0.12)';
-          setInterval(()=>{
-            el.style.borderRight = el.style.borderRight ? '' : '2px solid rgba(255,255,255,0.12)';
-          },500);
+          footer.style.opacity = '0';
+          setTimeout(()=>{ footer.style.visibility = 'hidden'; }, 380);
         }
       }
-      step();
-    })();
+    });
+  }
 
-    // Countdown to a target date (set 30 days from 2025-09-19 -> 2025-10-19)
-    (function(){
-      // You can change this date to your official launch date
-      const target = new Date('2025-10-19T00:00:00');
-      const daysEl = document.getElementById('days');
-      const hoursEl = document.getElementById('hours');
-      const minsEl = document.getElementById('minutes');
-      const secsEl = document.getElementById('seconds');
+  // Sequence durations (ms)
+  const LOADING_MS = 4000;
+  const WELCOME_MS = 4000;
+  const RICK_MS = 3000;
 
-      function update(){
-        const now = new Date();
-        const diff = Math.max(0, target - now);
-        const s = Math.floor(diff/1000) % 60;
-        const m = Math.floor(diff/1000/60) % 60;
-        const h = Math.floor(diff/1000/60/60) % 24;
-        const d = Math.floor(diff/1000/60/60/24);
-        daysEl.textContent = String(d).padStart(2,'0');
-        hoursEl.textContent = String(h).padStart(2,'0');
-        minsEl.textContent = String(m).padStart(2,'0');
-        secsEl.textContent = String(s).padStart(2,'0');
+  // play rickroll for a fixed duration even if autoplay blocked — fallback to muted autoplay
+  function playRickrollFor(durationMs){
+    return new Promise((resolve)=>{
+      const vid = document.getElementById('rrVideo');
+      const unmuteBtn = document.getElementById('unmuteBtn');
+      let done = false;
+
+      function finish(){
+        try{ vid.pause(); vid.currentTime = 0; }catch(e){}
+        unmuteBtn.style.display = 'none';
+        unmuteBtn.setAttribute('aria-hidden','true');
+        if(!done){ done = true; resolve(); }
       }
-      update();
-      setInterval(update, 1000);
-    })();
 
-    // Demo handlers (placeholder)
-    function subscribe(e){
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      if(!email) return;
-      // This is a demo — replace with real submission endpoint
-      alert('Thanks! ' + email + ' will be notified when VLearn launches.');
-      e.target.reset();
+      // attempt unmuted autoplay
+      vid.muted = false;
+      vid.play().then(()=>{
+        // autoplay with sound allowed
+        setTimeout(finish, durationMs);
+      }).catch(()=>{
+        // try muted autoplay
+        vid.muted = true;
+        vid.play().then(()=>{
+          // show unmute
+          unmuteBtn.style.display = 'inline-block';
+          unmuteBtn.setAttribute('aria-hidden','false');
+          unmuteBtn.onclick = function(){
+            vid.muted = false;
+            vid.play().catch(()=>{});
+            unmuteBtn.style.display = 'none';
+          };
+          setTimeout(finish, durationMs);
+        }).catch(()=>{
+          // autoplay failed entirely (very rare), just wait the duration and resolve
+          setTimeout(finish, durationMs);
+        });
+      });
+    });
+  }
+
+  // run the full flow
+  async function runSequence(){
+    showScreen('loading');
+    await new Promise(r=>setTimeout(r, LOADING_MS));
+
+    showScreen('welcome');
+    await new Promise(r=>setTimeout(r, WELCOME_MS));
+
+    showScreen('rickroll');
+    await playRickrollFor(RICK_MS);
+
+    showScreen('comingsoon');
+  }
+
+  // Sneak peek to reveal real site
+  document.getElementById('sneakBtn').addEventListener('click', ()=>{
+    showScreen('real-site');
+    // focus for accessibility
+    document.getElementById('real-site').focus?.();
+  });
+
+  // Theme panel interactions
+  const themeBtn = document.getElementById('themeOpen');
+  const panel = document.getElementById('themePanel');
+  themeBtn.addEventListener('click', (e)=> { e.stopPropagation(); panel.classList.toggle('visible'); });
+
+  document.addEventListener('click', (e)=>{
+    if(!panel.contains(e.target) && !themeBtn.contains(e.target)){
+      panel.classList.remove('visible');
     }
-    function openDemo(){
-      // opens a small sample in a new tab — this is static placeholder content
-      const html = `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>VLearn Sample</title><style>body{font-family:Inter,Arial;padding:40px;background:#07102a;color:#eaf6f4}h1{font-family:Merriweather,serif}</style></head><body><h1>Sample Answer Preview</h1><h3>Chapter: Light — Reflection</h3><p><strong>Q:</strong> Define reflection of light.</p><p><strong>A:</strong> Reflection is the bouncing back of light when it strikes a surface, with the angle of incidence equal to the angle of reflection.</p></body></html>`;
-      const w = window.open();
-      w.document.write(html);
-      w.document.close();
-    }
-  </script>
+  });
+
+  document.querySelectorAll('.theme-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const t = item.dataset.theme;
+      setTheme(t);
+      panel.classList.remove('visible');
+    });
+    item.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'Enter' || ev.key === ' '){
+        ev.preventDefault();
+        item.click();
+      }
+    });
+  });
+
+  function setTheme(name){
+    document.body.setAttribute('data-theme', name);
+    try{ localStorage.setItem('vlearn_theme', name); }catch(e){}
+  }
+  function restoreTheme(){
+    try{
+      const t = localStorage.getItem('vlearn_theme');
+      if(t) setTheme(t);
+    }catch(e){}
+  }
+  restoreTheme();
+
+  // start sequence automatically after load
+  window.addEventListener('load', ()=> {
+    // small delay to allow fonts/background to paint
+    setTimeout(()=> runSequence(), 220);
+  });
+
+  // keyboard: esc closes theme panel
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){ panel.classList.remove('visible'); }
+  });
+</script>
 </body>
-</html>
